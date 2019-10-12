@@ -22,7 +22,7 @@ const shortenService = (req, res) => {
                     res.status(201).json(result);
                 }
             } else {
-                res.send(422).send('The shortcode fails to meet the following regexp: ^[0-9a-zA-Z_]{4,}$.');
+                res.status(422).send('The shortcode fails to meet the following regexp: ^[0-9a-zA-Z_]{4,}$.');
             }
         } else {
             //generate short code
