@@ -16,9 +16,12 @@ const taskHistorySchema = new Schema({
         trim: true
     },
     taskStatus: {
-        type: 'NUmber',
+        type: 'Number',
         required: true
     }
+    
+},{
+    timestamps: true
 });
 
-module.exports = mongoose.model('TaskHistroy', taskHistorySchema);
+module.exports = mongoose.model('TaskHistory', taskHistorySchema);

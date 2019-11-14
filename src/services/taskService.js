@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 
 const connUri = process.env.MONGO_DEV_CONN_URL;
 const Task = require('../models/task');
+const TaskHistory = require('../models/taskHistory');
+const TaskStatus = require('../models/enum');
 
 module.exports = {
     addTask: (req, res) => {
@@ -10,7 +12,7 @@ module.exports = {
             let status = 201;
             if (!err) {
               const { taskname, project } = req.body;
-              const taskStatus = 'unattended';
+              const taskStatus = TaskStatus.Unattended;
               const task = new Task({ taskname, project, taskStatus });
               task.save((err, user) => {
                 if (!err) {
@@ -69,12 +71,38 @@ module.exports = {
             if (!err) {
               result.status = status;
               result.result = _task;
-              Task.findOne({ _Id: ObjectId(taskId) }, function (err, doc){
-                if(!err){
-                  doc.taskStatus = req.taskStatus;
-                  doc.save();
-                }
+              var ObjectId = require('mongoose').Types.ObjectId;
+              Task.updateOne({ _id: ObjectId(taskId) }, {taskStatus: taskStatus}, function (err, doc){
+
               });
+            } else {
+              status = 500;
+              result.status = status;
+              result.error = err;
+            }
+            res.status(status).send(result);
+          });
+        } else {
+          status = 500;
+          result.status = status;
+          result.error = err;
+          res.status(status).send(result);
+        }
+      });
+    },
+
+    getTaskHistory: (req, res) =>{
+      const {taskId} = req.query;
+      //var ObjectId = require('mongoose').Types.ObjectId; 
+      mongoose.connect(connUri, { useNewUrlParser : true, useCreateIndex: true, useUnifiedTopology: true }, (err) => {
+        let result = {};
+        let status = 201;
+        if (!err) {
+          
+          TaskHistory.find({taskId: taskId}, (err, taskHistory) => {
+            if (!err) {
+              result.status = status;
+              result.result = taskHistory;
             } else {
               status = 500;
               result.status = status;

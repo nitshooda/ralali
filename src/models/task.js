@@ -17,9 +17,11 @@ const taskSchema = new Schema({
         trim: true
     },
     taskStatus: {
-        type: 'String',
+        type: 'Number',
         required: true
     }
+},{
+    timestamps: true
 });
 
 module.exports = mongoose.model('Task', taskSchema);
